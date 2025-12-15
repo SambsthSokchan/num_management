@@ -1,0 +1,52 @@
+<div class="sidebar bg-white p-3" id="sidebar-wrapper" th:fragment="sidebar">
+    <div class="sidebar-heading text-center mb-4">
+        <img th:src="@{/images/num.png}" alt="Logo" class="mb-2" style="width: 80px; height: auto;">
+        <h5 class="fw-bold" style="color:#5D5FEF;">NUM Management</h5>
+    </div>
+
+    <div class="list-group list-group-flush">
+        <small class="text-uppercase text-muted fw-bold mb-2 ms-3" style="font-size: 0.75rem;">Menu</small>
+
+        <a th:href="@{/}" class="list-group-item list-group-item-action border-0"
+            th:classappend="${currentUri == '/' ? 'active-item' : ''}">
+            <i class="fas fa-home me-3"></i>Home
+        </a>
+        <a th:href="@{/teachers}" class="list-group-item list-group-item-action border-0"
+            sec:authorize="hasRole('ADMIN')"
+            th:classappend="${currentUri != null && currentUri.startsWith('/teachers') ? 'active-item' : ''}">
+            <i class="fas fa-chalkboard-teacher me-3"></i>Teachers
+        </a>
+        <a th:href="@{/students}" class="list-group-item list-group-item-action border-0"
+            sec:authorize="hasAnyRole('ADMIN', 'TEACHER')"
+            th:classappend="${currentUri != null && currentUri.startsWith('/students') ? 'active-item' : ''}">
+            <i class="fas fa-user-graduate me-3"></i>Students
+        </a>
+        <a th:href="@{/classes}" class="list-group-item list-group-item-action border-0"
+            sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')"
+            th:classappend="${currentUri != null && currentUri.startsWith('/classes') ? 'active-item' : ''}">
+            <i class="fas fa-layer-group me-3"></i>Classes
+        </a>
+        <a th:href="@{/subjects}" class="list-group-item list-group-item-action border-0"
+            th:classappend="${currentUri != null && currentUri.startsWith('/subjects') ? 'active-item' : ''}">
+            <i class="fas fa-book me-3"></i>Subjects
+        </a>
+        <a th:href="@{/attendance}" class="list-group-item list-group-item-action border-0"
+            sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')"
+            th:classappend="${currentUri != null && currentUri.startsWith('/attendance') ? 'active-item' : ''}">
+            <i class="fas fa-users me-3"></i>Attendance
+        </a>
+
+        <small class="text-uppercase text-muted fw-bold mb-2 ms-3 mt-4" style="font-size: 0.75rem;">Others</small>
+        <a th:href="@{/profile}" class="list-group-item list-group-item-action border-0"
+            th:classappend="${currentUri != null && currentUri.startsWith('/profile') ? 'active-item' : ''}">
+            <i class="fas fa-user-circle me-3"></i>Profile
+        </a>
+        <a th:href="@{/settings}" class="list-group-item list-group-item-action border-0"
+            th:classappend="${currentUri != null && currentUri.startsWith('/settings') ? 'active-item' : ''}">
+            <i class="fas fa-cog me-3"></i>Settings
+        </a>
+        <a th:href="@{/logout}" class="list-group-item list-group-item-action border-0 text-danger mt-3">
+            <i class="fas fa-sign-out-alt me-3"></i>Logout
+        </a>
+    </div>
+</div>

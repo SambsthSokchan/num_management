@@ -1,0 +1,217 @@
+/* Global Variables & Resets */
+:root {
+    --primary-color: #4F46E5;
+    /* Indigo */
+    --secondary-color: #FBBF24;
+    /* Amber */
+    --bg-color: #F9FAFB;
+    /* Lighter Gray */
+    --text-dark: #1F2937;
+    /* Gray 800 */
+    --text-light: #9CA3AF;
+    /* Gray 400 */
+
+    /* Card Colors from Screenshot */
+    --card-purple-bg: #DEDDFF;
+    --card-purple-text: #1F2937;
+    /* Dark text based on image */
+
+    --card-yellow-bg: #FEEFC3;
+    --card-yellow-text: #1F2937;
+
+    --white: #FFFFFF;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--white);
+}
+
+/* Sidebar Styles */
+#sidebar-wrapper {
+    min-width: 260px;
+    max-width: 260px;
+    min-height: 100vh;
+    border-right: 1px solid #f0f0f0;
+}
+
+.list-group-item {
+    font-size: 0.95rem;
+    color: #6c757d;
+    /* Grey text */
+    padding: 12px 20px;
+    margin-bottom: 5px;
+}
+
+.list-group-item:hover {
+    color: #5D5FEF;
+    /* Purple hover */
+    background-color: transparent;
+}
+
+.active-item {
+    color: #5D5FEF !important;
+    font-weight: 600;
+    background-color: transparent !important;
+}
+
+/* Custom Colors for Cards */
+.bg-purple-light {
+    background-color: #DEDDFF;
+    /* Light Purple Card */
+}
+
+.bg-yellow-light {
+    background-color: #FEEFC3;
+    /* Light Yellow Card */
+}
+
+.bg-purple-dark {
+    background-color: #7B74EA;
+    /* Badge Color */
+}
+
+/* Card Styling */
+.card-custom {
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.rounded-4 {
+    border-radius: 20px !important;
+}
+
+/* Text Colors */
+.text-purple-custom {
+    color: #DEDDFF;
+}
+
+/* Tables */
+.table-container {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+th {
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+
+/* Dark Mode Styles */
+body.dark-mode {
+    --bg-color: #111827;
+    --text-dark: #F3F4F6;
+    --white: #1F2937;
+    /* Card background */
+    color: var(--text-dark);
+    background-color: var(--bg-color);
+}
+
+body.dark-mode #wrapper #sidebar-wrapper {
+    background-color: #1F2937 !important;
+    border-right: 1px solid #374151;
+}
+
+body.dark-mode #page-content-wrapper {
+    background-color: #111827 !important;
+    /* Override inline styles */
+}
+
+body.dark-mode .card,
+body.dark-mode .card-custom,
+body.dark-mode .table-container,
+body.dark-mode .bg-white {
+    background-color: #1F2937 !important;
+    color: #F3F4F6;
+}
+
+body.dark-mode .text-muted {
+    color: #9CA3AF !important;
+}
+
+body.dark-mode .list-group-item {
+    color: #9CA3AF;
+    background-color: transparent !important;
+    border: none;
+}
+
+body.dark-mode .list-group-item:hover,
+body.dark-mode .active-item {
+    color: #A5B4FC !important;
+    /* Lighter indigo */
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #374151;
+    border-color: #4B5563;
+    color: #F3F4F6;
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus {
+    background-color: #4B5563;
+    color: #F3F4F6;
+    border-color: #6366F1;
+}
+
+body.dark-mode table th {
+    color: #D1D5DB;
+    border-bottom-color: #374151;
+}
+
+body.dark-mode table td {
+    border-bottom-color: #374151;
+    color: #E5E7EB;
+}
+
+body.dark-mode .navbar i {
+    color: #F3F4F6 !important;
+}
+
+body.dark-mode .navbar .fw-bold {
+    color: #F3F4F6;
+}

@@ -1,0 +1,61 @@
+<nav class="navbar navbar-light bg-transparent py-4 px-4 justify-content-end" th:fragment="topbar">
+    <div class="d-flex align-items-center gap-4">
+        <div class="dropdown">
+            <div class="position-relative" id="messageDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                style="cursor: pointer;">
+                <i class="fas fa-comment-dots fs-4 text-dark"></i>
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+                    2
+                </span>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-3"
+                aria-labelledby="messageDropdown" style="width: 300px;">
+                <li>
+                    <h6 class="dropdown-header fw-bold text-uppercase small text-muted">Messages</h6>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-3 p-2 rounded-3" href="#">
+                        <img th:src="@{/images/admin-profile.jpg}" class="rounded-circle object-fit-cover" width="40"
+                            height="40" alt="User">
+                        <div>
+                            <div class="fw-bold small">Sokha Teacher</div>
+                            <div class="text-muted small text-truncate" style="max-width: 180px;">Please check the
+                                updated schedule.</div>
+                        </div>
+                        <small class="text-muted ms-auto" style="font-size: 0.7rem;">2m</small>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-3 p-2 rounded-3" href="#">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                            style="width: 40px; height: 40px; min-width: 40px;">D</div>
+                        <div>
+                            <div class="fw-bold small">Dara Student</div>
+                            <div class="text-muted small text-truncate" style="max-width: 180px;">Can I ask about the
+                                assignment?</div>
+                        </div>
+                        <small class="text-muted ms-auto" style="font-size: 0.7rem;">1h</small>
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item text-center text-primary fw-bold small py-2" href="#">View All Messages</a>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="text-end lh-1">
+                <div class="fw-bold"
+                    th:text="${loggedInUser != null ? loggedInUser.firstName + ' ' + loggedInUser.lastName : 'User'}">
+                    Seang Hai</div>
+                <small class="text-muted" style="font-size: 0.8rem;"
+                    th:text="${loggedInUser != null && !loggedInUser.roles.empty ? loggedInUser.roles[0].name.replace('ROLE_', '') : 'User'}">Admin</small>
+            </div>
+            <!-- User Avatar -->
+            <img th:src="${loggedInUser != null && loggedInUser.profilePicture != null} ? ${loggedInUser.profilePicture} : 'https://ui-avatars.com/api/?name=' + ${loggedInUser != null ? loggedInUser.firstName + '+' + loggedInUser.lastName : 'User'}"
+                class="rounded-circle object-fit-cover" width="45" height="45" alt="User">
+        </div>
+    </div>
+</nav>

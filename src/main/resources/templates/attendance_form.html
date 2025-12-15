@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add/Edit Attendance</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="w-100" style="background-color: #FAFBFF;">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+
+            <!-- Content -->
+            <div class="container-fluid px-4">
+                <h2 class="mt-4 mb-4 fw-bold"
+                    th:text="${attendance.id} == null ? 'Add Attendance Record' : 'Edit Attendance Record'">Add
+                    Attendance
+                    Record</h2>
+
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <form
+                            th:action="${attendance.id} == null ? @{/attendance/save} : @{/attendance/update/{id}(id=${attendance.id})}"
+                            th:object="${attendance}" method="post">
+
+                            <!-- Hidden ID for Edit Mode -->
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="mb-3">
+                                <label for="student" class="form-label">Student</label>
+                                <select class="form-select" id="student" th:field="*{student}" required>
+                                    <option value="" disabled selected>Select Student</option>
+                                    <option th:each="student : ${students}" th:value="${student.id}"
+                                        th:text="${student.name}"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="date" th:field="*{date}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" th:field="*{status}" required>
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                    <option value="Late">Late</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a th:href="@{/attendance}" class="btn btn-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary"
+                                    style="background-color: #5D5FEF; border-color: #5D5FEF;"
+                                    th:text="${attendance.id} == null ? 'Save Record' : 'Update Record'">Save
+                                    Record</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+
+</body>
+
+</html>
