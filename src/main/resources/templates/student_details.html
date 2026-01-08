@@ -11,6 +11,7 @@
     <div layout:fragment="content">
         <div class="container-fluid px-4">
 
+            <!-- Header Section -->
             <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
                 <h2 class="fw-bold m-0">Student Profile</h2>
                 <a th:href="@{/students}" class="btn btn-outline-secondary">
@@ -20,7 +21,7 @@
 
             <!-- Profile & Stats Grid -->
             <div class="row mb-4">
-                <!-- Profile Card -->
+                <!-- Profile Card: Information -->
                 <div class="col-md-8">
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div class="card-body p-4">
@@ -52,8 +53,7 @@
 
                 <!-- Stats Card -->
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100"
-                        style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div
                             class="card-body p-4 d-flex flex-column justify-content-center align-items-center text-center">
                             <h6 class="text-muted mb-2">Attendance Rate</h6>
@@ -63,10 +63,7 @@
                                 95%
                             </h1>
                             <!-- Scripts -->
-                            <script
-                                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-                            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                            <script th:src="@{/js/dashboard.js}"></script>
+
                             <p class="small text-muted mt-2">Based on <span th:text="${attendanceList.size()}">0</span>
                                 records</p>
                         </div>
@@ -101,7 +98,7 @@
                                     </td>
                                     <td>
                                         <a th:href="@{/attendance/edit/{id}(id=${record.id})}"
-                                            class="btn btn-sm btn-light text-muted">
+                                            class="btn btn-sm btn-outline-primary border-0 bg-transparent">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </td>

@@ -10,69 +10,116 @@
 
 <body>
 
-    <div class="auth-container">
-        <div class="auth-header">
-            <h2>Create Account</h2>
-            <p id="roleHeader">Sign up as an Admin</p>
-        </div>
-
-        <form th:action="@{/signup}" method="post" th:object="${user}">
-
-            <div th:if="${param.success}" class="alert alert-info"
-                style="color: green; text-align: center; margin-bottom: 10px;">
-                Registration successful! <a th:href="@{/login}">Login here</a>
+    <!-- Dark Mode Switch (Top Right) -->
+    <div class="mod-switch-container">
+        <div class="mod-switch" id="theme-toggle-switch">
+            <div class="mod-switch-track">
+                <div class="mod-switch-circle"></div>
+                <i class="fas fa-sun position-absolute"
+                    style="right: 8px; font-size: 12px; color: #F59E0B; z-index: 1;"></i>
+                <i class="fas fa-moon position-absolute"
+                    style="left: 8px; font-size: 12px; color: #6B7280; z-index: 1;"></i>
             </div>
-
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" th:field="*{firstName}" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" th:field="*{lastName}" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" th:field="*{email}" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" th:field="*{password}" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-                <label>Role</label>
-                <select th:field="*{role}" id="roleSelect" class="form-control" required
-                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; background-color: #fff;"
-                    onchange="updateRoleHeader()">
-                    <option value="" disabled selected>Select your role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Teacher">Teacher</option>
-                    <option value="Student">Student</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn-auth">Sign Up</button>
-        </form>
-
-        <div class="auth-footer">
-            Already have an account? <a th:href="@{/login}">Login</a>
         </div>
     </div>
 
-    <script>
-        function updateRoleHeader() {
-            var roleSelect = document.getElementById("roleSelect");
-            var selectedRole = roleSelect.options[roleSelect.selectedIndex].value;
-            var headerText = document.getElementById("roleHeader");
-            if (headerText) {
-                headerText.innerText = "Sign up as an " + selectedRole;
+    <!-- Main Split Wrapper -->
+    <div class="auth-wrapper">
+        <script>
+            // Apply theme immediately
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
             }
-        }
-    </script>
+
+            // Toggle Logic
+            document.addEventListener("DOMContentLoaded", function () {
+                const themeSwitch = document.getElementById('theme-toggle-switch');
+                if (themeSwitch) {
+                    themeSwitch.addEventListener('click', function () {
+                        document.body.classList.toggle('dark-mode');
+                        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+                        localStorage.setItem('theme', theme);
+                    });
+                }
+            });
+        </script>
+
+        <!-- Left Side: Form -->
+        <div class="auth-left">
+            <div style="max-width: 420px; width: 100%; margin: 0 auto;">
+                <!-- Header -->
+                <h2>NUM Event Management</h2>
+                <p class="auth-subtitle">Create your account</p>
+
+                <!-- Alerts -->
+                <div th:if="${param.success}" class="alert alert-info"
+                    style="color: #059669; background: #d1fae5; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 0.9rem;">
+                    Registration successful! <a th:href="@{/login}" style="color: #059669; font-weight: bold;">Login
+                        here</a>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/signup}" method="post" th:object="${user}">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <!-- Label removed upon request -->
+                            <input type="text" th:field="*{firstName}" class="form-control" placeholder="First Name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" th:field="*{lastName}" class="form-control" placeholder="Last Name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" th:field="*{email}" class="form-control" placeholder="Enter your email"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" th:field="*{password}" class="form-control"
+                            placeholder="Create a password" required>
+                    </div>
+
+                    <!-- Role Hidden (Default to Student or Admin? User mock asked for 'Sign up as an Admin' in header originally but then said 'I don't need it' regarding role selector. I will default to STUDENT for general signup safety, or ADMIN if this is exclusively an admin portal, but safer is Student. I'll make it a hidden input so DTO doesn't fail.) -->
+                    <input type="hidden" name="role" value="Student">
+
+                    <!-- Terms Checkbox -->
+                    <div class="form-extras">
+                        <label class="form-check">
+                            <input type="checkbox" required>
+                            <span>I agree to the <a href="#" class="terms-link">terms & policy</a></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-auth">Signup</button>
+                </form>
+
+                <div class="divider">Or</div>
+
+                <!-- Google Auth (Mock) -->
+                <a href="#" class="btn-google">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G">
+                    Sign in with Google
+                </a>
+
+                <div class="auth-footer">
+                    Already have an account? <a th:href="@{/login}">Login</a>
+                </div>
+                <!-- Correcting footer text proactively -->
+            </div>
+            <!-- Footer correction script equivalent or just inline fix above -->
+        </div>
+
+        <!-- Right Side: Image -->
+        <div class="auth-right">
+            <!-- Image loaded via CSS background -->
+        </div>
+    </div>
+
+    <!-- No role script needed -->
 
 </body>
 

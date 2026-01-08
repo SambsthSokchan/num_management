@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/layout}">
+
+<head>
+    <title>Teacher Dashboard - NUM</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 mb-4 fw-bold">Welcome, Teacher <span th:text="${teacherName}">Name</span></h2>
+
+            <div class="row">
+                <!-- My Classes Card -->
+                <div class="col-xl-6 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="fw-bold text-primary"><i class="fas fa-chalkboard-teacher me-2"></i>My Classes
+                            </h5>
+                        </div>
+                        <div class="card-body px-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    th:each="class : ${myClasses}">
+                                    <div>
+                                        <span class="fw-bold" th:text="${class.name}">Class Name</span>
+                                        <br>
+                                        <small class="text-muted"
+                                            th:text="${class.faculty} + ' - ' + ${class.department}">Faculty -
+                                            Dept</small>
+                                    </div>
+                                    <a th:href="@{/classes/{id}(id=${class.id})}"
+                                        class="btn btn-sm btn-outline-primary">View</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="col-xl-6 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="fw-bold text-success"><i class="fas fa-check-circle me-2"></i>Quick Tasks</h5>
+                        </div>
+                        <div class="card-body px-4">
+                            <div class="d-grid gap-3">
+                                <a th:href="@{/attendance/mark}" class="btn btn-light text-start p-3 border shadow-sm">
+                                    <i class="fas fa-user-check me-2 text-success"></i> Mark Attendance Today
+                                </a>
+                                <a href="#" class="btn btn-light text-start p-3 border shadow-sm">
+                                    <i class="fas fa-book me-2 text-primary"></i> Upload Subject Materials
+                                </a>
+                                <a href="#" class="btn btn-light text-start p-3 border shadow-sm">
+                                    <i class="fas fa-calendar-alt me-2 text-warning"></i> View Teaching Schedule
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

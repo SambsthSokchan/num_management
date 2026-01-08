@@ -1,183 +1,163 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/layout}">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <title>Dashboard - NUM System</title>
 </head>
 
 <body>
 
-    <div class="d-flex" id="wrapper">
-        <!-- Sidebar -->
-        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <div layout:fragment="content">
+        <div class="container-fluid px-4">
 
-        <!-- Page Content -->
-        <div id="page-content-wrapper" class="w-100" style="background-color: #FAFBFF;">
-            <!-- Topbar -->
-            <div th:replace="~{fragments/topbar :: topbar}"></div>
-
-            <!-- Dashboard Content -->
-            <div class="container-fluid px-4">
-
-                <div class="row g-4 mb-2">
-                    <div class="col-md-4">
-                        <div class="card card-custom bg-purple-light border-0 h-100">
-                            <div class="card-body p-4 d-flex flex-column justify-content-between">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
-                                    <i class="fas fa-ellipsis-h text-white-50 fs-5"></i>
-                                </div>
-                                <div class="mt-4">
-                                    <h1 class="display-5 fw-bold mb-0" th:text="${adminCount}">3</h1>
-                                    <div class="text-dark fs-5">Admins</div>
-                                </div>
+            <div class="row g-4 mb-2 mt-2">
+                <div class="col-md-4">
+                    <div class="card card-custom bg-purple-light border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
+                                <i class="fas fa-ellipsis-h text-white-50 fs-5"></i>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card card-custom bg-yellow-light border-0 h-100">
-                            <div class="card-body p-4 d-flex flex-column justify-content-between">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
-                                    <i class="fas fa-ellipsis-h text-muted fs-5"></i>
-                                </div>
-                                <div class="mt-4">
-                                    <h1 class="display-5 fw-bold mb-0" th:text="${teacherCount}">10</h1>
-                                    <div class="text-dark fs-5">Teachers</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card card-custom bg-purple-light border-0 h-100">
-                            <div class="card-body p-4 d-flex flex-column justify-content-between">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
-                                    <i class="fas fa-ellipsis-h text-white-50 fs-5"></i>
-                                </div>
-                                <div class="mt-4">
-                                    <h1 class="display-5 fw-bold mb-0" th:text="${studentCount}">50</h1>
-                                    <div class="text-dark fs-5">Students</div>
-                                </div>
+                            <div class="mt-4">
+                                <h1 class="display-5 fw-bold mb-0" th:text="${adminCount}">3</h1>
+                                <div class="text-dark fs-5">Admins</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row g-4 mb-4">
-                    <div class="col-md-5">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between mb-3">
-                                    <h5 class="fw-bold">Students</h5>
-                                    <i class="fas fa-ellipsis-h text-muted"></i>
-                                </div>
-                                <div class="position-relative" style="height: 250px; width: 100%;">
-                                    <canvas id="studentsChart"></canvas>
-                                    <div class="position-absolute top-50 start-50 translate-middle text-center">
-                                        <i class="fas fa-user-friends fs-2 text-info-subtle"></i>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-around mt-3">
-                                    <!-- Note: These specific percentages are static in visual, but could be dynamic if needed -->
-                                    <div class="text-center">
-                                        <h5 class="fw-bold mb-0" id="boys-count">25</h5>
-                                        <small class="text-muted"><span class="text-info">●</span> Boys (<span
-                                                id="boys-pct">50</span>%)</small>
-                                    </div>
-                                    <div class="text-center">
-                                        <h5 class="fw-bold mb-0" id="girls-count">25</h5>
-                                        <small class="text-muted"><span class="text-warning">●</span> Girls
-                                            (<span id="girls-pct">50</span>%)</small>
-                                    </div>
-                                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom bg-yellow-light border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
+                                <i class="fas fa-ellipsis-h text-muted fs-5"></i>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-7">
-                        <div class="card border-0 shadow-sm rounded-4 h-100">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between mb-3">
-                                    <h5 class="fw-bold">Attendance</h5>
-                                    <i class="fas fa-ellipsis-h text-muted"></i>
-                                </div>
-                                <div class="mb-2">
-                                    <span class="me-3"><span class="text-purple-custom">●</span> present</span>
-                                    <span><span class="text-warning">●</span> absent</span>
-                                </div>
-                                <div style="height: 250px;">
-                                    <canvas id="attendanceChart"></canvas>
-                                </div>
+                            <div class="mt-4">
+                                <h1 class="display-5 fw-bold mb-0" th:text="${teacherCount}">10</h1>
+                                <div class="text-dark fs-5">Teachers</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Activities Section -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm rounded-4">
-                            <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3">Recent Activities</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Student</th>
-                                                <th>Class</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr th:if="${recentActivities.empty}">
-                                                <td colspan="4" class="text-center py-3 text-muted">No recent activities
-                                                    found.
-                                                </td>
-                                            </tr>
-                                            <tr th:each="activity : ${recentActivities}">
-                                                <td th:text="${activity.date}">2023-10-25</td>
-                                                <td>
-                                                    <a th:href="@{/students/{id}(id=${activity.student.id})}"
-                                                        class="text-decoration-none fw-bold text-dark">
-                                                        <span th:text="${activity.student.name}">Student Name</span>
-                                                    </a>
-                                                </td>
-                                                <td
-                                                    th:text="${activity.student.classEntity != null ? activity.student.classEntity.name : 'N/A'}">
-                                                    Class</td>
-                                                <td>
-                                                    <span class="badge rounded-pill"
-                                                        th:classappend="${activity.status == 'Present' ? 'bg-success' : 'bg-danger'}"
-                                                        th:text="${activity.status}">Present</span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom bg-blue-light border-0 h-100">
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="badge bg-white text-dark rounded-pill px-3 py-2">2025/26</span>
+                                <i class="fas fa-ellipsis-h text-white-50 fs-5"></i>
+                            </div>
+                            <div class="mt-4">
+                                <h1 class="display-5 fw-bold mb-0" th:text="${studentCount}">50</h1>
+                                <div class="text-dark fs-5">Students</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="fw-bold">Students</h5>
+                                <i class="fas fa-ellipsis-h text-muted"></i>
+                            </div>
+                            <div class="position-relative" style="height: 250px; width: 100%;">
+                                <canvas id="studentsChart"></canvas>
+                                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                    <i class="fas fa-user-friends fs-2 text-info-subtle"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-around mt-3">
+                                <div class="text-center">
+                                    <h5 class="fw-bold mb-0" id="male-count">0</h5>
+                                    <small class="text-muted"><span style="color:#AEE2FF;">●</span> Boys (<span
+                                            id="male-pct">0</span>%)</small>
+                                </div>
+                                <div class="text-center">
+                                    <h5 class="fw-bold mb-0" id="female-count">0</h5>
+                                    <small class="text-muted"><span style="color:#FFB7B2;">●</span> Girls (<span
+                                            id="female-pct">0</span>%)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="fw-bold">Attendance</h5>
+                                <i class="fas fa-ellipsis-h text-muted"></i>
+                            </div>
+                            <div class="mb-2">
+                                <span class="me-3"><span class="text-purple-custom">●</span> present</span>
+                                <span><span class="text-warning">●</span> absent</span>
+                            </div>
+                            <div style="height: 250px;">
+                                <canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3">Recent Activities</h5>
+                            <div class="table-responsive table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Student</th>
+                                            <th>Class</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${recentActivities.empty}">
+                                            <td colspan="4" class="text-center py-3 text-muted">No recent activities
+                                                found.
+                                            </td>
+                                        </tr>
+                                        <tr th:each="activity : ${recentActivities}">
+                                            <td th:text="${activity.date}">2023-10-25</td>
+                                            <td>
+                                                <a th:href="@{/students/{id}(id=${activity.student.id})}"
+                                                    class="text-decoration-none fw-bold text-dark">
+                                                    <span th:text="${activity.student.name}">Student Name</span>
+                                                </a>
+                                            </td>
+                                            <td
+                                                th:text="${activity.student.classEntity != null ? activity.student.classEntity.name : 'N/A'}">
+                                                Class</td>
+                                            <td>
+                                                <span class="badge rounded-pill"
+                                                    th:classappend="${activity.status == 'Present' ? 'bg-success' : 'bg-danger'}"
+                                                    th:text="${activity.status}">Present</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script th:src="@{/js/dashboard.js(v=${#dates.createNow().getTime()})}"></script>
+
 
 </body>
 

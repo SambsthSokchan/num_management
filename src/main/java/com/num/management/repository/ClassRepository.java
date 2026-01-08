@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClassRepository extends JpaRepository<ClassEntity, Long> {
+    // Basic CRUD operations found in JpaRepository are sufficient here
+    boolean existsByName(String name);
 }

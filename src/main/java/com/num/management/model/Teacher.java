@@ -12,26 +12,36 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Teacher {
+
+    // Primary key for the teacher entity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Teacher's name, mandatory and at least 2 characters
     @NotBlank(message = "Name is mandatory")
     @Size(min = 2, message = "Name must be at least 2 characters")
     private String name;
 
+    // Teacher's email address, mandatory and valid email format
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "subject_id")
-    private Subject subjectEntity;
+    // Relationship: A teacher can specialize in multiple subjects
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "teacher_subjects", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private java.util.Set<Subject> subjects = new java.util.HashSet<>();
 
     private String phoneNumber;
 
-    // Helper method for Thymeleaf
+    // Helper method to safely retrieve the subject names for display
     public String getSubjectName() {
-        return subjectEntity != null ? subjectEntity.getName() : "N/A";
+        if (subjects == null || subjects.isEmpty()) {
+            return "N/A";
+        }
+        return subjects.stream()
+                .map(Subject::getName)
+                .collect(java.util.stream.Collectors.joining(", "));
     }
 }

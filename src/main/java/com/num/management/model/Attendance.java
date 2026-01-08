@@ -14,10 +14,14 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // The student this attendance record belongs to
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
+    // Date of the attendance record
     private LocalDate date;
-    private String status; // Present, Absent, Late
+
+    // Status of attendance: "Present", "Absent", "Late", etc.
+    private String status;
 }

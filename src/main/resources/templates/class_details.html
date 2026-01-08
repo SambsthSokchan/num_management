@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{fragments/layout}">
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{fragments/layout}">
 
 <head>
     <title th:text="${classEntity.name} + ' - Details'">Class Details</title>
@@ -18,30 +18,85 @@
                     <p class="text-muted mb-0" th:text="${classEntity.description}">Class Description</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a th:href="@{/classes}" class="btn btn-outline-secondary">
+                    <a th:href="@{/classes}" class="btn btn-outline-secondary border-0 text-muted">
                         <i class="fas fa-arrow-left me-2"></i>Back to Classes
                     </a>
-                    <a th:href="@{/students/new}" class="btn btn-primary"
-                        style="background-color: #5D5FEF; border-color: #5D5FEF;">
+                    <a th:href="@{/students/new(classId=${classEntity.id})}" class="btn btn-primary"
+                        style="background-color: #5D5FEF; border-color: #5D5FEF;"
+                        sec:authorize="hasAnyRole('ADMIN', 'TEACHER')">
                         <i class="fas fa-plus me-2"></i>Add Student to Class
                     </a>
                 </div>
             </div>
 
-            <!-- Scripts -->
+            <!-- Scripts (Local Chart.js for this view) -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script th:src="@{/js/dashboard.js}"></script>
 
-            <!-- Students List -->
+            <!-- Weekly Schedule -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4" th:if="${not #lists.isEmpty(classEntity.schedules)}">
+                <div class="card-body p-0">
+                    <div class="p-4 border-bottom">
+                        <h5 class="fw-bold m-0"><i class="fas fa-calendar-alt me-2 text-primary"></i>Weekly Schedule
+                        </h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4 text-muted text-uppercase small fw-bold" style="width: 150px;">Day
+                                    </th>
+                                    <th class="text-muted text-uppercase small fw-bold">Subject</th>
+                                    <th class="text-muted text-uppercase small fw-bold text-end pe-4">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="sch : ${classEntity.schedules}" class="border-bottom">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3"
+                                                style="width: 32px; height: 32px; color: #5D5FEF;">
+                                                <i class="fas fa-calendar-day"></i>
+                                            </div>
+                                            <span class="fw-semibold text-dark" th:text="${sch.dayOfWeek}">Mon</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 border"
+                                            style="background-color: #f8f9fa; color: #4b5563; font-weight: 500; font-size: 0.85rem;">
+                                            <i class="fas fa-book-open me-2 text-primary"></i>
+                                            <span th:text="${sch.subject.name}">Subject Name</span>
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <span class="text-muted small">08:00 AM - 11:00 AM</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(classEntity.schedules)}">
+                                    <td colspan="3" class="text-center py-5 text-muted">
+                                        <i class="fas fa-calendar-times mb-3 d-block"
+                                            style="font-size: 2rem; opacity: 0.5;"></i>
+                                        No schedule available for this class.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students List in this Class -->
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-0">
                     <div class="table-container p-3">
-                        <h5 class="fw-bold mb-3">Enrolled Students (<span th:text="${students.size()}">0</span>)</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0">Enrolled Students (<span th:text="${totalItems}">0</span>)</h5>
+                        </div>
                         <table class="table table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Gender</th>
@@ -54,20 +109,61 @@
                                         No students enrolled in this class yet.
                                     </td>
                                 </tr>
-                                <tr th:each="student : ${students}">
-                                    <td th:text="${student.id}">1</td>
+                                <tr th:each="student, stat : ${students.content}">
+                                    <!-- Calculate overall index globally across pages -->
+                                    <td th:text="${(currentPage * 10) + stat.count}">1</td>
                                     <td th:text="${student.name}">Student Name</td>
                                     <td th:text="${student.email}">Email</td>
                                     <td th:text="${student.gender}">Gender</td>
                                     <td>
                                         <a th:href="@{/students/edit/{id}(id=${student.id})}"
-                                            class="btn btn-sm btn-outline-primary me-1">
+                                            class="btn btn-sm btn-outline-primary border-0 bg-transparent me-1"
+                                            title="Edit">
                                             <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{/students/delete/{id}(id=${student.id})}"
+                                            class="btn btn-sm btn-outline-danger border-0 bg-transparent"
+                                            sec:authorize="hasAnyRole('ADMIN', 'TEACHER')"
+                                            onclick="return confirm('Are you sure you want to delete this student?');"
+                                            title="Delete">
+                                            <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <!-- Pagination Controls -->
+                        <nav aria-label="Page navigation" th:if="${totalPages > 1}" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link border-0 rounded-circle mx-1 d-flex align-items-center justify-content-center"
+                                        th:href="@{/classes/{id}(id=${classEntity.id}, page=${currentPage - 1})}"
+                                        aria-label="Previous"
+                                        style="width: 32px; height: 32px; color: #5D5FEF; background-color: #EEF2FF;">
+                                        <i class="fas fa-chevron-left" style="font-size: 0.8rem;"></i>
+                                    </a>
+                                </li>
+
+                                <li class="page-item" th:each="pageNum : ${pageNumbers}"
+                                    th:classappend="${pageNum == currentPage + 1} ? 'active'">
+                                    <a class="page-link border-0 rounded-circle mx-1 d-flex align-items-center justify-content-center"
+                                        th:href="@{/classes/{id}(id=${classEntity.id}, page=${pageNum - 1})}"
+                                        th:text="${pageNum}"
+                                        th:style="${pageNum == currentPage + 1} ? 'width: 32px; height: 32px; background-color: #5D5FEF; color: white;' : 'width: 32px; height: 32px; color: #6b7280;'">1</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                                    <a class="page-link border-0 rounded-circle mx-1 d-flex align-items-center justify-content-center"
+                                        th:href="@{/classes/{id}(id=${classEntity.id}, page=${currentPage + 1})}"
+                                        aria-label="Next"
+                                        style="width: 32px; height: 32px; color: #5D5FEF; background-color: #EEF2FF;">
+                                        <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
                     </div>
                 </div>
             </div>

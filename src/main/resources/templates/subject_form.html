@@ -25,12 +25,14 @@
 
             <!-- Content -->
             <div class="container-fluid px-4">
+                <!-- Page Title -->
                 <h2 class="mt-4 mb-4 fw-bold" th:text="${subject.id} == null ? 'Add New Subject' : 'Edit Subject'">Add
                     New
                     Subject</h2>
 
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
+                        <!-- Subject Form -->
                         <form
                             th:action="${subject.id} == null ? @{/subjects/save} : @{/subjects/update/{id}(id=${subject.id})}"
                             th:object="${subject}" method="post">

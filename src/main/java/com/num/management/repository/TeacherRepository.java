@@ -6,7 +6,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
-    java.util.List<Teacher> findByNameContainingIgnoreCase(String name);
 
-    java.util.List<Teacher> findBySubjectEntityId(Long subjectId);
+    // Find teachers by name ignoring case with pagination
+    org.springframework.data.domain.Page<Teacher> findByNameContainingIgnoreCase(String name,
+            org.springframework.data.domain.Pageable pageable);
+
+    // Find all teachers assigned to a specific subject
+    java.util.List<Teacher> findBySubjectsId(Long subjectId);
 }

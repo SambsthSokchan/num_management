@@ -25,12 +25,14 @@
 
             <!-- Content -->
             <div class="container-fluid px-4">
+                <!-- Page Title: Dynamic based on Add/Edit mode -->
                 <h2 class="mt-4 mb-4 fw-bold" th:text="${student.id} == null ? 'Add New Student' : 'Edit Student'">Add
                     New
                     Student</h2>
 
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
+                        <!-- Student Form -->
                         <form
                             th:action="${student.id} == null ? @{/students/save} : @{/students/update/{id}(id=${student.id})}"
                             th:object="${student}" method="post">
@@ -50,7 +52,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}"
-                                    placeholder="e.g. chan.dara@student.num.edu.kh" required
+                                    placeholder="e.g. chan.dara@gmail.com" required
                                     th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
                                     th:errors="*{email}">
@@ -61,8 +63,18 @@
                                 <label for="classEntity" class="form-label">Class</label>
                                 <select class="form-select" id="classEntity" th:field="*{classEntity}" required>
                                     <option value="" disabled selected>Select Class</option>
-                                    <option th:each="cls : ${classes}" th:value="${cls.id}" th:text="${cls.name}">
-                                    </option>
+
+                                    <!-- Iterate Faculties -->
+                                    <th:block th:each="facultyEntry : ${groupedClasses}">
+                                        <!-- Iterate Departments within Faculty -->
+                                        <th:block th:each="deptEntry : ${facultyEntry.value}">
+                                            <!-- OptGroup for each Faculty-Department combination -->
+                                            <optgroup th:label="${facultyEntry.key} + ' - ' + ${deptEntry.key}">
+                                                <option th:each="cls : ${deptEntry.value}" th:value="${cls.id}"
+                                                    th:text="${cls.name}">Class Name</option>
+                                            </optgroup>
+                                        </th:block>
+                                    </th:block>
                                 </select>
                             </div>
 

@@ -23,7 +23,7 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/topbar :: topbar}"></div>
 
-            <!-- Content -->
+            <!-- Content: Edit Profile Form -->
             <div class="container-fluid px-4">
                 <h2 class="mt-4 mb-4 fw-bold">Edit Profile</h2>
 
@@ -32,6 +32,7 @@
                         <form th:action="@{/profile/update}" th:object="${user}" method="post">
                             <input type="hidden" th:field="*{id}">
 
+                            <!-- Personal Details Inputs -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="firstName" class="form-label">First Name</label>
@@ -45,6 +46,7 @@
                                 </div>
                             </div>
 
+                            <!-- Email Input (ReadOnly) -->
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address</label>
                                 <input type="email" class="form-control" id="email" th:field="*{email}" readonly
@@ -52,6 +54,7 @@
                                 <div class="form-text">Email address cannot be changed.</div>
                             </div>
 
+                            <!-- Password Update Input -->
                             <div class="mb-3">
                                 <label for="password" class="form-label">New Password (leave blank to keep
                                     current)</label>

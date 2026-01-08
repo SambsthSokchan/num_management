@@ -25,6 +25,7 @@
 
             <!-- Content -->
             <div class="container-fluid px-4">
+                <!-- Page Title -->
                 <h2 class="mt-4 mb-4 fw-bold"
                     th:text="${attendance.id} == null ? 'Add Attendance Record' : 'Edit Attendance Record'">Add
                     Attendance
@@ -32,6 +33,7 @@
 
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
+                        <!-- Attendance Form -->
                         <form
                             th:action="${attendance.id} == null ? @{/attendance/save} : @{/attendance/update/{id}(id=${attendance.id})}"
                             th:object="${attendance}" method="post">

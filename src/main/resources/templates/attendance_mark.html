@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/layout}">
+
+<head>
+    <title>Mark Attendance - NUM</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 mb-4 fw-bold">Mark Attendance</h2>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="fw-bold text-primary">
+                        <i class="fas fa-chalkboard me-2"></i>
+                        <span th:text="${classEntity.name}">Class Name</span>
+                        <small class="text-muted ms-2"
+                            th:text="${#temporals.format(form.attendanceList[0].date, 'dd MMMM yyyy')}">Date</small>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/attendance/mark/save}" th:object="${form}" method="post">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Student Name</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="attendance, stat : *{attendanceList}">
+                                        <td th:text="${stat.count}">1</td>
+                                        <td>
+                                            <span class="fw-bold" th:text="${attendance.student.name}">Student
+                                                Name</span>
+                                            <!-- Hidden fields to bind student ID and Date -->
+                                            <input type="hidden"
+                                                th:field="*{attendanceList[__${stat.index}__].student.id}" />
+                                            <input type="hidden" th:field="*{attendanceList[__${stat.index}__].date}" />
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <input type="radio" class="btn-check"
+                                                    th:field="*{attendanceList[__${stat.index}__].status}"
+                                                    th:value="'Present'" th:id="'present-' + ${stat.index}"
+                                                    autocomplete="off">
+                                                <label class="btn btn-outline-success"
+                                                    th:for="'present-' + ${stat.index}">
+                                                    <i class="fas fa-check me-1"></i>Present
+                                                </label>
+
+                                                <input type="radio" class="btn-check"
+                                                    th:field="*{attendanceList[__${stat.index}__].status}"
+                                                    th:value="'Absent'" th:id="'absent-' + ${stat.index}"
+                                                    autocomplete="off">
+                                                <label class="btn btn-outline-danger"
+                                                    th:for="'absent-' + ${stat.index}">
+                                                    <i class="fas fa-times me-1"></i>Absent
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a th:href="@{/dashboard/teacher}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Attendance</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/settings")
 public class SettingsController {
 
+    // View the settings page
     @GetMapping
     public String viewSettings() {
-        return "settings";
+        return "settings"; // Return the settings view template
     }
 }

@@ -13,6 +13,12 @@
 </head>
 
 <body>
+    <script>
+        // Immediately apply theme to prevent flash
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
@@ -23,29 +29,94 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/topbar :: topbar}"></div>
 
-            <!-- Content -->
+            <!-- Content: Settings -->
             <div class="container-fluid px-4">
                 <h2 class="mt-4 mb-4 fw-bold">Settings</h2>
 
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <!-- System Settings (Admin Only) -->
+                        <div class="card border-0 shadow-sm rounded-4 mb-4" sec:authorize="hasRole('ADMIN')">
                             <div class="card-body p-4">
-                                <h5 class="fw-bold mb-4">Appearance</h5>
-
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">Dark Mode</h6>
-                                        <p class="text-muted small mb-0">Switch between light and dark themes</p>
+                                <h5 class="fw-bold mb-4 text-primary"><i class="fas fa-tools me-2"></i>System
+                                    Administration</h5>
+                                <div class="mb-3">
+                                    <label class="fw-bold mb-1">Academic Year Configuration</label>
+                                    <div class="d-flex gap-2">
+                                        <select class="form-select w-auto">
+                                            <option>2024-2025</option>
+                                            <option selected>2025-2026</option>
+                                            <option>2026-2027</option>
+                                        </select>
+                                        <button class="btn btn-primary" onclick="alert('System Year Updated!')">Save
+                                            Change</button>
                                     </div>
-                                    <div class="form-check form-switch fs-4">
-                                        <input class="form-check-input" type="checkbox" id="darkModeSwitch"
-                                            style="cursor: pointer;">
-                                    </div>
+                                    <p class="text-muted small mt-1">Changes affect all dashboards globally.</p>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Role Permissions Reference (Admin Only - Matches User Request) -->
+                        <div class="card border-0 shadow-sm rounded-4 mb-4" sec:authorize="hasRole('ADMIN')">
+                            <div class="card-body p-4 bg-dark text-white rounded-4">
+                                <h5 class="fw-bold mb-4">Admin vs. Other Roles</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-borderless align-middle">
+                                        <thead>
+                                            <tr class="text-white-50 border-bottom border-secondary">
+                                                <th class="ps-0">Feature</th>
+                                                <th>Admin</th>
+                                                <th>Teacher</th>
+                                                <th>Student</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-0 fw-bold">Full System Access</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>Yes</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-0 fw-bold">Create/Delete Users</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>Yes</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-0 fw-bold">Manage Subjects</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>Yes</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>View Only</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-0 fw-bold">Mark Attendance</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>View Global
+                                                </td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>Primary Task
+                                                </td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>View Own</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-0 fw-bold">Change System Year</td>
+                                                <td><i class="fas fa-check-square text-success me-2"></i>Yes</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                                <td><i class="fas fa-times text-danger me-2"></i>No</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr class="border-secondary">
+                                <button class="btn btn-outline-light w-100 text-start"
+                                    onclick="alert('Exporting to Sheets...')">
+                                    <i class="fas fa-table me-2"></i>Export to Sheets
+                                </button>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Notification Settings Card -->
                         <div class="card border-0 shadow-sm rounded-4">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-4">Notifications</h5>
@@ -73,27 +144,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script th:src="@{/js/dashboard.js}"></script>
 
-    <script>
-        // Init Dark Mode State
-        const toggleSwitch = document.querySelector('#darkModeSwitch');
-        const currentTheme = localStorage.getItem('theme');
-
-        if (currentTheme) {
-            if (currentTheme === 'dark') {
-                toggleSwitch.checked = true;
-            }
-        }
-
-        toggleSwitch.addEventListener('change', function (e) {
-            if (e.target.checked) {
-                document.body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    </script>
+    <script th:src="@{/js/dashboard.js}"></script>
 </body>
+
+
 
 </html>

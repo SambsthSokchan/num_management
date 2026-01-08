@@ -4,47 +4,62 @@
         <h5 class="fw-bold" style="color:#5D5FEF;">NUM Management</h5>
     </div>
 
+    <!-- Navigation Menu -->
     <div class="list-group list-group-flush">
         <small class="text-uppercase text-muted fw-bold mb-2 ms-3" style="font-size: 0.75rem;">Menu</small>
 
+        <!-- Home Link (Admin & Teacher only) -->
         <a th:href="@{/}" class="list-group-item list-group-item-action border-0"
-            th:classappend="${currentUri == '/' ? 'active-item' : ''}">
-            <i class="fas fa-home me-3"></i>Home
+            th:if="${role == 'ADMIN' or role == 'TEACHER'}"
+            th:classappend="${currentUri == '/' || currentUri == '/dashboard' || currentUri.startsWith('/dashboard/') ? 'active-item' : ''}">
+            <i class="fas fa-home me-3"></i>Dashboard
         </a>
-        <a th:href="@{/teachers}" class="list-group-item list-group-item-action border-0"
-            sec:authorize="hasRole('ADMIN')"
-            th:classappend="${currentUri != null && currentUri.startsWith('/teachers') ? 'active-item' : ''}">
+        <!-- Admins Link (Admin only) -->
+        <a th:href="@{/admins}" class="list-group-item list-group-item-action border-0" th:if="${role == 'ADMIN'}"
+            th:classappend="${currentUri != null && currentUri.startsWith('/admins') ? 'active-item' : ''}">
+            <i class="fas fa-user-shield me-3"></i>Admins
+        </a>
+        <!-- Teachers Link (Admin only) -->
+        <a th:href="@{/teachers}" class="list-group-item list-group-item-action border-0" th:if="${role == 'ADMIN'}"
+            th:classappend="${currentUri != null && currentUri.contains('teachers') ? 'active-item' : ''}">
             <i class="fas fa-chalkboard-teacher me-3"></i>Teachers
         </a>
+        <!-- Students Link (Admin/Teacher) -->
         <a th:href="@{/students}" class="list-group-item list-group-item-action border-0"
-            sec:authorize="hasAnyRole('ADMIN', 'TEACHER')"
-            th:classappend="${currentUri != null && currentUri.startsWith('/students') ? 'active-item' : ''}">
+            th:if="${role == 'ADMIN' or role == 'TEACHER'}"
+            th:classappend="${currentUri != null && currentUri.contains('students') ? 'active-item' : ''}">
             <i class="fas fa-user-graduate me-3"></i>Students
         </a>
+        <!-- Classes Link (All) -->
         <a th:href="@{/classes}" class="list-group-item list-group-item-action border-0"
-            sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')"
-            th:classappend="${currentUri != null && currentUri.startsWith('/classes') ? 'active-item' : ''}">
+            th:classappend="${currentUri != null && currentUri.contains('classes') ? 'active-item' : ''}">
             <i class="fas fa-layer-group me-3"></i>Classes
         </a>
+        <!-- Subjects Link (Admin/Teacher only) -->
         <a th:href="@{/subjects}" class="list-group-item list-group-item-action border-0"
-            th:classappend="${currentUri != null && currentUri.startsWith('/subjects') ? 'active-item' : ''}">
+            th:if="${role == 'ADMIN' or role == 'TEACHER'}"
+            th:classappend="${currentUri != null && currentUri.contains('subjects') ? 'active-item' : ''}">
             <i class="fas fa-book me-3"></i>Subjects
         </a>
+        <!-- Attendance Link (All) -->
         <a th:href="@{/attendance}" class="list-group-item list-group-item-action border-0"
-            sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')"
-            th:classappend="${currentUri != null && currentUri.startsWith('/attendance') ? 'active-item' : ''}">
+            th:classappend="${currentUri != null && currentUri.contains('attendance') ? 'active-item' : ''}">
             <i class="fas fa-users me-3"></i>Attendance
         </a>
-
-        <small class="text-uppercase text-muted fw-bold mb-2 ms-3 mt-4" style="font-size: 0.75rem;">Others</small>
+        <!-- Profile Link (All) -->
         <a th:href="@{/profile}" class="list-group-item list-group-item-action border-0"
             th:classappend="${currentUri != null && currentUri.startsWith('/profile') ? 'active-item' : ''}">
             <i class="fas fa-user-circle me-3"></i>Profile
         </a>
+
+        <!-- Secondary Menu Items -->
+        <small class="text-uppercase text-muted fw-bold mb-2 ms-3 mt-4" style="font-size: 0.75rem;">Others</small>
+
         <a th:href="@{/settings}" class="list-group-item list-group-item-action border-0"
             th:classappend="${currentUri != null && currentUri.startsWith('/settings') ? 'active-item' : ''}">
             <i class="fas fa-cog me-3"></i>Settings
         </a>
+        <!-- Logout Link -->
         <a th:href="@{/logout}" class="list-group-item list-group-item-action border-0 text-danger mt-3">
             <i class="fas fa-sign-out-alt me-3"></i>Logout
         </a>

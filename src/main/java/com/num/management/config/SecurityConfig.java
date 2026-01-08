@@ -16,48 +16,72 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+        @Autowired
+        private CustomUserDetailsService userDetailsService;
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        // Bean to encode passwords using BCrypt
+        @Bean
+        public static PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/signup", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                        .requestMatchers("/teachers/**").hasRole("ADMIN")
-                        .requestMatchers("/students/**").hasAnyRole("ADMIN", "TEACHER")
-                        .requestMatchers("/attendance").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
-                        .requestMatchers("/attendance/new", "/attendance/edit/**", "/attendance/delete/**")
-                        .hasAnyRole("ADMIN", "TEACHER")
-                        .requestMatchers("/subjects/new", "/subjects/edit/**", "/subjects/delete/**").hasRole("ADMIN")
-                        .requestMatchers("/classes/new", "/classes/save", "/classes/edit/**", "/classes/update/**",
-                                "/classes/delete/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers("/classes/**").hasAnyRole("ADMIN", "TEACHER", "STUDENT")
-                        .anyRequest().authenticated())
-                .formLogin(
-                        form -> form
-                                .loginPage("/login")
-                                .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/", true)
-                                .permitAll())
-                .logout(
-                        logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                .permitAll());
-        return http.build();
-    }
+        // Configure security filter chain: URL permissions, login, and logout
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests((authorize) -> authorize
+                                                // Allow access to static resources and public pages
+                                                .requestMatchers("/login", "/signup", "/css/**", "/js/**", "/images/**",
+                                                                "/webjars/**")
+                                                .permitAll()
+                                                // Restrict specific paths to roles (ADMIN, TEACHER, STUDENT)
+                                                // Restrict specific paths to roles (ADMIN, TEACHER, STUDENT)
+                                                .requestMatchers("/admins/**").hasRole("ADMIN")
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService);
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
-    }
+                                                // Teachers Management determines who is a teacher -> Admin only
+                                                .requestMatchers("/teachers/**").hasRole("ADMIN")
+
+                                                // Student Management -> Admin and Teacher
+                                                .requestMatchers("/students/**").hasAnyRole("ADMIN", "TEACHER")
+
+                                                // Attendance
+                                                .requestMatchers("/attendance/mark/**").hasAnyRole("TEACHER", "ADMIN")
+                                                .requestMatchers("/attendance/**")
+                                                .hasAnyRole("ADMIN", "TEACHER", "STUDENT")
+
+                                                // Subjects -> Admin and Teacher (Teacher uploads materials)
+                                                .requestMatchers("/subjects/**").hasAnyRole("ADMIN", "TEACHER")
+
+                                                // Classes -> Admin manages, others view
+                                                .requestMatchers("/classes/new", "/classes/save", "/classes/edit/**",
+                                                                "/classes/update/**",
+                                                                "/classes/delete/**")
+                                                .hasRole("ADMIN")
+                                                .requestMatchers("/classes/**")
+                                                .hasAnyRole("ADMIN", "TEACHER", "STUDENT")
+
+                                                .anyRequest().authenticated()) // All other requests require
+                                                                               // authentication
+                                .formLogin(
+                                                form -> form
+                                                                .loginPage("/login")
+                                                                .loginProcessingUrl("/login")
+                                                                .defaultSuccessUrl("/", true)
+                                                                .permitAll())
+                                .logout(
+                                                logout -> logout
+                                                                .logoutRequestMatcher(
+                                                                                new AntPathRequestMatcher("/logout"))
+                                                                .permitAll());
+                return http.build();
+        }
+
+        // Bean to provide authentication logic using custom user details service
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+                auth.setUserDetailsService(userDetailsService);
+                auth.setPasswordEncoder(passwordEncoder());
+                return auth;
+        }
 }

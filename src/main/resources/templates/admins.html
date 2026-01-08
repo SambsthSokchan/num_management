@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admins</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+    <script>
+        // Immediately apply theme to prevent flash
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="w-100" style="background-color: #FAFBFF;">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/topbar :: topbar}"></div>
+
+            <!-- Main Content Area -->
+            <div class="container-fluid px-4">
+                <!-- Header and Actions -->
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+                    <h2 class="fw-bold m-0">Admins</h2>
+                    <a th:href="@{/admins/new}" class="btn btn-primary"
+                        style="background-color: #5D5FEF; border-color: #5D5FEF;">
+                        <i class="fas fa-plus me-2"></i>Add Admin
+                    </a>
+                </div>
+
+                <!-- Admins Data Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="admin : ${admins}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle me-3 bg-primary text-white d-flex justify-content-center align-items-center"
+                                            style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden;">
+                                            <img th:if="${admin.profilePicture != null}"
+                                                th:src="${admin.profilePicture}" alt="Profile"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                            <span th:if="${admin.profilePicture == null}" class="fw-bold"
+                                                th:text="${admin.firstName.substring(0,1)}">A</span>
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold" style="color: #5D5FEF;"
+                                                th:text="${admin.firstName + ' ' + admin.lastName}">Admin Name</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="${admin.email}">admin@example.com</td>
+                                <td class="text-end pe-4">
+                                    <a th:href="@{/admins/edit/{id}(id=${admin.id})}"
+                                        class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{/admins/delete/{id}(id=${admin.id})}"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Are you sure you want to delete this admin?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+
+</body>
+
+</html>

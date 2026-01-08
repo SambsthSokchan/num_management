@@ -1,81 +1,95 @@
-document.addEventListener("DOMContentLoaded", function () {
-
-    // 0. SIDEBAR ACTIVE STATE
-    // Get current path
+// Function to initialize Dashboard Logic
+function initDashboard() {
+    // -------------------------------------------------------------------------
+    // 0. SIDEBAR ACTIVE STATE MANAGEMENT
+    // -------------------------------------------------------------------------
     const currentPath = window.location.pathname;
-
-    // Select all sidebar list items
     const sidebarLinks = document.querySelectorAll('#sidebar-wrapper .list-group-item');
 
     sidebarLinks.forEach(link => {
-        const href = link.getAttribute('href');
-
-        // Exact match for home '/'
-        if (href === '/' && currentPath === '/') {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === '/' && (currentPath === '/' || currentPath.startsWith('/dashboard'))) {
             link.classList.add('active-item');
-        }
-        // Starts with match for other sections (e.g. /teachers matches /teachers/new)
-        else if (href !== '/' && currentPath.startsWith(href)) {
+        } else if (linkPath !== '/' && currentPath.includes(linkPath)) {
             link.classList.add('active-item');
         }
     });
 
+    // -------------------------------------------------------------------------
+    // 0.5 GLOBAL DARK MODE TOGGLE
+    // -------------------------------------------------------------------------
+    const themeSwitch = document.getElementById('theme-toggle-switch');
+
+    // Remove existing listeners to prevent duplicates if init is called twice (safety)
+    if (themeSwitch) {
+        // Clone node to strip old listeners
+        // const newSwitch = themeSwitch.cloneNode(true);
+        // themeSwitch.parentNode.replaceChild(newSwitch, themeSwitch);
+        // Actually, just binding click is fine if we ensure init runs once. 
+
+        themeSwitch.onclick = function () {
+            document.body.classList.toggle('dark-mode');
+            let theme = 'light';
+            if (document.body.classList.contains('dark-mode')) {
+                theme = 'dark';
+            }
+            localStorage.setItem('theme', theme);
+        };
+    }
+
+    // -------------------------------------------------------------------------
     // 1. STUDENTS DOUGHNUT CHART
+    // -------------------------------------------------------------------------
     const ctxStudents = document.getElementById('studentsChart')?.getContext('2d');
     if (ctxStudents) {
         fetch('/api/dashboard/chart/gender')
             .then(response => response.json())
             .then(data => {
-                // Update Legend
-                const boys = data[0];
-                const girls = data[1];
-                const total = boys + girls;
+                const maleCount = data[0] || 0;
+                const femaleCount = data[1] || 0;
+                const total = maleCount + femaleCount;
 
-                // Update Counts
-                const boysCountEl = document.getElementById('boys-count');
-                const girlsCountEl = document.getElementById('girls-count');
-                if (boysCountEl) boysCountEl.innerText = boys;
-                if (girlsCountEl) girlsCountEl.innerText = girls;
+                const maleEl = document.getElementById('male-count');
+                const femaleEl = document.getElementById('female-count');
+                if (maleEl) maleEl.innerText = maleCount;
+                if (femaleEl) femaleEl.innerText = femaleCount;
 
-                // Update Percentages (handle division by zero)
-                const boysPct = total > 0 ? Math.round((boys / total) * 100) : 0;
-                const girlsPct = total > 0 ? Math.round((girls / total) * 100) : 0;
+                const malePct = total > 0 ? Math.round((maleCount / total) * 100) : 0;
+                const femalePct = total > 0 ? Math.round((femaleCount / total) * 100) : 0;
 
-                const boysPctEl = document.getElementById('boys-pct');
-                const girlsPctEl = document.getElementById('girls-pct');
-                if (boysPctEl) boysPctEl.innerText = boysPct;
-                if (girlsPctEl) girlsPctEl.innerText = girlsPct;
+                const malePctEl = document.getElementById('male-pct');
+                const femalePctEl = document.getElementById('female-pct');
+                if (malePctEl) malePctEl.innerText = malePct;
+                if (femalePctEl) femalePctEl.innerText = femalePct;
 
                 new Chart(ctxStudents, {
                     type: 'doughnut',
                     data: {
                         labels: ['Boys', 'Girls'],
                         datasets: [{
-                            data: data, // [Boys, Girls] from API
-                            backgroundColor: [
-                                '#AEE2FF', // Light Blue for Boys
-                                '#FEEFC3'  // Light Yellow for Girls
-                            ],
+                            data: [maleCount, femaleCount],
+                            backgroundColor: ['#AEE2FF', '#FFB7B2'],
                             borderWidth: 0,
                             hoverOffset: 4
                         }]
                     },
                     options: {
-                        cutout: '75%', // Makes the donut thinner/thicker
-                        plugins: {
-                            legend: { display: false } // We built a custom legend in HTML
-                        },
+                        cutout: '75%',
+                        plugins: { legend: { display: false } },
                         responsive: true,
                         maintainAspectRatio: false
                     }
                 });
             })
-            .catch(error => console.error('Error fetching student chart data:', error));
+            .catch(error => console.error('Error:', error));
     }
 
+    // -------------------------------------------------------------------------
     // 2. ATTENDANCE BAR CHART
-    const ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
-    if (ctxAttendance) {
+    // -------------------------------------------------------------------------
+    const attendanceChartEl = document.getElementById('attendanceChart');
+    if (attendanceChartEl) {
+        const ctxAttendance = attendanceChartEl.getContext('2d');
         fetch('/api/dashboard/chart/attendance')
             .then(response => response.json())
             .then(data => {
@@ -86,44 +100,38 @@ document.addEventListener("DOMContentLoaded", function () {
                         datasets: [
                             {
                                 label: 'Present',
-                                data: data.present, // From API
-                                backgroundColor: '#DEDDFF', // Purple Bar
+                                data: data.present,
+                                backgroundColor: '#DEDDFF',
                                 borderRadius: 5,
                                 barPercentage: 0.5
                             },
                             {
                                 label: 'Absent',
-                                data: data.absent, // From API
-                                backgroundColor: '#FEEFC3', // Yellow Bar
+                                data: data.absent,
+                                backgroundColor: '#FEEFC3',
                                 borderRadius: 5,
                                 barPercentage: 0.5
                             }
                         ]
                     },
                     options: {
-                        plugins: {
-                            legend: { display: false }
-                        },
+                        plugins: { legend: { display: false } },
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100, // Or let it auto-scale? User code had max 100.
-                                grid: {
-                                    color: '#f0f0f0', // Very light grid lines
-                                    borderDash: [5, 5]
-                                },
-                                ticks: { color: '#aaa' }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: '#aaa' }
-                            }
+                            y: { beginAtZero: true, max: 100, grid: { color: '#f0f0f0', borderDash: [5, 5] }, ticks: { color: '#aaa' } },
+                            x: { grid: { display: false }, ticks: { color: '#aaa' } }
                         },
                         responsive: true,
                         maintainAspectRatio: false
                     }
                 });
             })
-            .catch(error => console.error('Error fetching attendance chart data:', error));
+            .catch(error => console.error('Error:', error));
     }
-});
+}
+
+// Ensure Init runs whether loaded now or later
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", initDashboard);
+} else {
+    initDashboard();
+}

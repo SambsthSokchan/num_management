@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "NumManagementApplication",
+            "request": "launch",
+            "mainClass": "com.num.management.NumManagementApplication",
+            "projectName": "demo"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-NumManagementApplication",
+            "request": "launch",
+            "mainClass": "com.num.management.NumManagementApplication",
+            "projectName": "management"
+        }
+    ]
+}

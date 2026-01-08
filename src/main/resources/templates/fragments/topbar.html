@@ -1,5 +1,15 @@
 <nav class="navbar navbar-light bg-transparent py-4 px-4 justify-content-end" th:fragment="topbar">
     <div class="d-flex align-items-center gap-4">
+        <!-- Dark Mode Toggle -->
+        <!-- Custom Dark Mode Switch -->
+        <div id="theme-toggle-switch" class="mod-switch me-3">
+            <div class="mod-switch-track">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+                <div class="mod-switch-circle"></div>
+            </div>
+        </div>
+
         <div class="dropdown">
             <div class="position-relative" id="messageDropdown" data-bs-toggle="dropdown" aria-expanded="false"
                 style="cursor: pointer;">
@@ -45,17 +55,76 @@
                 </li>
             </ul>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <div class="text-end lh-1">
-                <div class="fw-bold"
-                    th:text="${loggedInUser != null ? loggedInUser.firstName + ' ' + loggedInUser.lastName : 'User'}">
-                    Seang Hai</div>
-                <small class="text-muted" style="font-size: 0.8rem;"
-                    th:text="${loggedInUser != null && !loggedInUser.roles.empty ? loggedInUser.roles[0].name.replace('ROLE_', '') : 'User'}">Admin</small>
-            </div>
-            <!-- User Avatar -->
-            <img th:src="${loggedInUser != null && loggedInUser.profilePicture != null} ? ${loggedInUser.profilePicture} : 'https://ui-avatars.com/api/?name=' + ${loggedInUser != null ? loggedInUser.firstName + '+' + loggedInUser.lastName : 'User'}"
-                class="rounded-circle object-fit-cover" width="45" height="45" alt="User">
+        <!-- Role Switcher (For Demo) -->
+        <div class="dropdown me-3">
+            <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" id="roleDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user-tag me-1"></i> Switch Role
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="roleDropdown">
+                <li>
+                    <h6 class="dropdown-header">View as...</h6>
+                </li>
+                <li><a class="dropdown-item" href="/dashboard/admin"><i
+                            class="fas fa-user-shield me-2 text-danger"></i>Admin</a></li>
+                <li><a class="dropdown-item" href="/dashboard/teacher"><i
+                            class="fas fa-chalkboard-teacher me-2 text-success"></i>Teacher</a></li>
+                <li><a class="dropdown-item" href="/dashboard/student"><i
+                            class="fas fa-user-graduate me-2 text-primary"></i>Student</a></li>
+            </ul>
+        </div>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle-split"
+                id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                <div class="text-end lh-1">
+                    <div class="fw-bold text-dark"
+                        th:text="${role == 'ADMIN' ? 'Seang Hai' : (role == 'TEACHER' ? 'Sokha Teacher' : (role == 'STUDENT' ? 'Dara Student' : 'User'))}">
+                        Seang Hai</div>
+                    <small class="text-muted" style="font-size: 0.8rem;"
+                        th:text="${role != null ? role : 'GUEST'}">Admin</small>
+                </div>
+                <!-- User Avatar -->
+                <img th:src="@{'https://ui-avatars.com/api/?name=' + ${role == 'ADMIN' ? 'Seang+Hai' : (role == 'TEACHER' ? 'Sokha+Teacher' : (role == 'STUDENT' ? 'Dara+Student' : 'User'))}}"
+                    class="rounded-circle object-fit-cover shadow-sm border border-2 border-white" width="45"
+                    height="45" alt="User">
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4" aria-labelledby="profileDropdown"
+                style="min-width: 250px; overflow: hidden; padding-top: 0;">
+                <!-- Header Section -->
+                <li class="p-3 mb-2 text-white" style="background-color: #5D5FEF;">
+                    <h5 class="m-0 fw-bold"
+                        th:text="${role == 'ADMIN' ? 'Seang Hai' : (role == 'TEACHER' ? 'Sokha Teacher' : (role == 'STUDENT' ? 'Dara Student' : 'User'))}">
+                        User Name</h5>
+                    <small th:text="${role != null ? role : 'GUEST'}">Role</small>
+                </li>
+
+                <!-- Menu Items -->
+                <li><a class="dropdown-item py-2" th:href="@{/profile}">
+                        <i class="fas fa-user-circle me-3 text-secondary"></i>My Profile
+                    </a></li>
+                <li><a class="dropdown-item py-2" th:href="@{/tasks}">
+                        <i class="fas fa-tasks me-3 text-secondary"></i>Task
+                    </a></li>
+                <li><a class="dropdown-item py-2" th:href="@{/messages}">
+                        <i class="fas fa-comment-dots me-3 text-secondary"></i>Message
+                    </a></li>
+                <li><a class="dropdown-item py-2" th:href="@{/settings}">
+                        <i class="fas fa-cog me-3 text-secondary"></i>Account Settings
+                    </a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <form th:action="@{/logout}" method="post" class="m-0">
+                        <button type="submit" class="dropdown-item py-2 text-danger fw-bold bg-transparent border-0">
+                            <i class="fas fa-power-off me-3"></i>Log Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

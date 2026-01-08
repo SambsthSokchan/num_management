@@ -25,12 +25,14 @@
 
             <!-- Content -->
             <div class="container-fluid px-4">
+                <!-- Page Title -->
                 <h2 class="mt-4 mb-4 fw-bold" th:text="${classEntity.id} == null ? 'Add New Class' : 'Edit Class'">Add
                     New
                     Class</h2>
 
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
+                        <!-- Class Form -->
                         <form
                             th:action="${classEntity.id} == null ? @{/classes/save} : @{/classes/update/{id}(id=${classEntity.id})}"
                             th:object="${classEntity}" method="post">
@@ -39,9 +41,103 @@
                             <input type="hidden" th:field="*{id}">
 
                             <div class="mb-3">
+                                <label for="faculty" class="form-label">Faculty</label>
+                                <select class="form-select" id="faculty" th:field="*{faculty}" required>
+                                    <option value="" disabled selected>Select Faculty...</option>
+                                    <option value="Faculty of Information Technology">Faculty of Information Technology
+                                    </option>
+                                    <option value="Faculty of Management">Faculty of Management</option>
+                                    <option value="Faculty of Finance & Accounting">Faculty of Finance & Accounting
+                                    </option>
+                                    <option value="Faculty of Economics">Faculty of Economics</option>
+                                    <option value="Faculty of Law">Faculty of Law</option>
+                                    <option value="Faculty of Tourism & Hospitality">Faculty of Tourism & Hospitality
+                                    </option>
+                                    <option value="Faculty of Foreign Languages">Faculty of Foreign Languages</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="department" class="form-label">Department / Major</label>
+                                <select class="form-select" id="department" name="department" th:field="*{department}"
+                                    required>
+                                    <option value="" disabled selected>Select Major...</option>
+                                    <optgroup label="Information Technology">
+                                        <option value="IT">IT (Information Technology)</option>
+                                        <option value="BIT">BIT (Business Information Technology)</option>
+                                        <option value="Robotic">Robotic (Robotic Engineering)</option>
+                                        <option value="MIS">MIS (Management Info Systems)</option>
+                                    </optgroup>
+                                    <optgroup label="Management">
+                                        <option value="General Management">General Management</option>
+                                        <option value="Human Resource Management">Human Resource Management</option>
+                                    </optgroup>
+                                    <optgroup label="Marketing">
+                                        <option value="Marketing Management">Marketing Management</option>
+                                        <option value="International Marketing">International Marketing</option>
+                                    </optgroup>
+                                    <optgroup label="NUM International College (NUM-IC)">
+                                        <option value="International Business (iBBA)">International Business (iBBA)
+                                        </option>
+                                        <option value="Global Entrepreneurship & Innovation">Global Entrepreneurship &
+                                            Innovation</option>
+                                    </optgroup>
+                                    <optgroup label="Finance & Accounting">
+                                        <option value="Finance and Banking">Finance and Banking</option>
+                                        <option value="Banking Operations">Banking Operations</option>
+                                        <option value="Financial Technology (FinTech)">Financial Technology (FinTech)
+                                        </option>
+                                        <option value="Professional Accounting">Professional Accounting</option>
+                                        <option value="Auditing and Taxation">Auditing and Taxation</option>
+                                    </optgroup>
+                                    <optgroup label="Economics">
+                                        <option value="Eco-Business">Eco-Business</option>
+                                        <option value="Economics for Development">Economics for Development</option>
+                                        <option value="Digital Economy">Digital Economy</option>
+                                        <option value="Smart City Planning Management">Smart City Planning Management
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Information Technology">
+                                        <option value="IT">Information Technology (IT)</option>
+                                        <option value="BIT">Business IT (BIT)</option>
+                                        <option value="Robotic">Robotic Engineering</option>
+                                        <option value="MIS">Management Information Systems (MIS)</option>
+                                    </optgroup>
+                                    <optgroup label="Law">
+                                        <option value="Public Law">Public Law</option>
+                                        <option value="Private Law">Private Law</option>
+                                        <option value="Commercial Law">Commercial Law</option>
+                                        <option value="International Law">International Law</option>
+                                        <option value="International Relations and Comparative Law">International
+                                            Relations Law</option>
+                                    </optgroup>
+                                    <optgroup label="Tourism & Hospitality">
+                                        <option value="Tourism Development">Tourism Development</option>
+                                        <option value="Hospitality Management">Hospitality Management</option>
+                                    </optgroup>
+                                    <optgroup label="Foreign Languages">
+                                        <option value="English Literature">English Literature</option>
+                                        <option value="Korean">Korean</option>
+                                        <option value="Japanese">Japanese</option>
+                                    </optgroup>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="name" class="form-label">Class Name</label>
                                 <input type="text" class="form-control" id="name" th:field="*{name}"
                                     placeholder="e.g. Year 3 - IT" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="schedule" class="form-label">Schedule</label>
+                                <select class="form-select" id="schedule" th:field="*{schedule}">
+                                    <option value="Monday - Friday">Monday - Friday</option>
+                                    <option value="Saturday - Sunday">Saturday - Sunday</option>
+                                    <option value="Monday - Wednesday - Friday">Monday - Wednesday - Friday</option>
+                                    <option value="Tuesday - Thursday">Tuesday - Thursday</option>
+                                </select>
                             </div>
 
                             <div class="mb-3">

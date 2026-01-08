@@ -21,28 +21,29 @@ public class DashboardRestController {
     @Autowired
     private com.num.management.repository.AttendanceRepository attendanceRepository;
 
+    // API endpoint to fetch gender distribution data for charts
     @GetMapping("/chart/gender")
     public List<Integer> getGenderData() {
-        // Fetch all students (In a real app, optimize with custom query)
+        // Fetch all students
         List<Student> students = studentRepository.findAll();
 
-        // Count Boys and Girls
-        int boys = (int) students.stream().filter(s -> "Male".equalsIgnoreCase(s.getGender())).count();
-        int girls = (int) students.stream().filter(s -> "Female".equalsIgnoreCase(s.getGender())).count();
+        // Count for Male and Female
+        long countMale = students.stream()
+                .filter(s -> "Male".equalsIgnoreCase(s.getGender()))
+                .count();
+        long countFemale = students.stream()
+                .filter(s -> "Female".equalsIgnoreCase(s.getGender()))
+                .count();
 
-        // Return as List [Boys, Girls] matching the JS expectation
-        // If the repository is empty, return [0, 0] or simulation data
-        if (boys == 0 && girls == 0) {
-            return List.of(207, 253); // Fallback to prompt data if DB empty
+        // If no data (and no students seeded yet), just mock some for visual check
+        if (students.isEmpty()) {
+            return List.of(0, 0);
         }
 
-        // Scale up for visual effect if DB has only 50 seeded students?
-        // Or just return actuals. Let's return actual counts from DB + an offset to
-        // match the prompt's "aesthetic" if needed.
-        // But for "Dynamic", we should show the real DB state (23, 27).
-        return List.of(boys, girls);
+        return List.of((int) countMale, (int) countFemale);
     }
 
+    // API endpoint to fetch weekly attendance data for charts
     @GetMapping("/chart/attendance")
     public Map<String, List<Integer>> getAttendanceData() {
         // Return structure: { "present": [60,70...], "absent": [50,60...] } for Mon-Fri
@@ -50,7 +51,7 @@ public class DashboardRestController {
         List<Integer> present = new java.util.ArrayList<>();
         List<Integer> absent = new java.util.ArrayList<>();
 
-        // Logic: Iterate Mon(0) to Fri(4)
+        // Logic: Iterate Mon(0) to Fri(4) of the current week
         java.time.LocalDate today = java.time.LocalDate.now();
         java.time.LocalDate monday = today.with(java.time.DayOfWeek.MONDAY);
 
@@ -59,7 +60,7 @@ public class DashboardRestController {
         for (int i = 0; i < 5; i++) {
             java.time.LocalDate date = monday.plusDays(i);
 
-            // Count for this date
+            // Count present and absent students for this date
             long p = allAtt.stream()
                     .filter(att -> att.getDate().equals(date) && "Present".equals(att.getStatus())).count();
             long a = allAtt.stream()

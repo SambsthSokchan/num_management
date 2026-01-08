@@ -25,12 +25,14 @@
 
             <!-- Content -->
             <div class="container-fluid px-4">
+                <!-- Page Title -->
                 <h2 class="mt-4 mb-4 fw-bold" th:text="${teacher.id} == null ? 'Add New Teacher' : 'Edit Teacher'">Add
                     New
                     Teacher</h2>
 
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
+                        <!-- Teacher Form -->
                         <form
                             th:action="${teacher.id} == null ? @{/teachers/save} : @{/teachers/update/{id}(id=${teacher.id})}"
                             th:object="${teacher}" method="post">
@@ -58,12 +60,17 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="subjectEntity" class="form-label">Subject</label>
-                                <select class="form-select" id="subjectEntity" th:field="*{subjectEntity}" required>
-                                    <option value="" disabled selected>Select Subject</option>
-                                    <option th:each="sub : ${subjects}" th:value="${sub.id}" th:text="${sub.name}">
-                                    </option>
-                                </select>
+                                <label class="form-label">Subjects (Select 1 or 2)</label>
+                                <div class="card p-2" style="max-height: 200px; overflow-y: auto;">
+                                    <div class="form-check" th:each="sub : ${subjects}">
+                                        <input class="form-check-input" type="checkbox" th:field="*{subjects}"
+                                            th:value="${sub.id}" th:id="${'subject-' + sub.id}">
+                                        <label class="form-check-label" th:for="${'subject-' + sub.id}"
+                                            th:text="${sub.name}">
+                                            Subject Name
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-3">

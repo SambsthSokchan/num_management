@@ -1,5 +1,6 @@
 /* Global Variables & Resets */
 :root {
+    /* Color Palette */
     --primary-color: #4F46E5;
     /* Indigo */
     --secondary-color: #FBBF24;
@@ -10,15 +11,6 @@
     /* Gray 800 */
     --text-light: #9CA3AF;
     /* Gray 400 */
-
-    /* Card Colors from Screenshot */
-    --card-purple-bg: #DEDDFF;
-    --card-purple-text: #1F2937;
-    /* Dark text based on image */
-
-    --card-yellow-bg: #FEEFC3;
-    --card-yellow-text: #1F2937;
-
     --white: #FFFFFF;
     --transition-speed: 0.3s;
 }
@@ -32,14 +24,20 @@
 
 body {
     background-color: var(--white);
+    color: var(--text-dark);
 }
 
-/* Sidebar Styles */
+/* -------------------------------------------------------------------------- */
+/*                                SIDEBAR                                     */
+/* -------------------------------------------------------------------------- */
 #sidebar-wrapper {
     min-width: 260px;
     max-width: 260px;
     min-height: 100vh;
     border-right: 1px solid #f0f0f0;
+    position: relative;
+    z-index: 1000;
+    /* Ensure sidebar is clickable and on top */
 }
 
 .list-group-item {
@@ -48,49 +46,45 @@ body {
     /* Grey text */
     padding: 12px 20px;
     margin-bottom: 5px;
+    border-radius: 10px !important;
+    /* Rounded corners for all items */
+    transition: all 0.2s ease-in-out;
 }
 
 .list-group-item:hover {
     color: #5D5FEF;
-    /* Purple hover */
-    background-color: transparent;
+    background-color: #EEF2FF;
+    /* Light Indigo Hover */
 }
 
 .active-item {
     color: #5D5FEF !important;
     font-weight: 600;
-    background-color: transparent !important;
+    background-color: #EEF2FF !important;
+    /* Light Indigo Background for Active */
 }
 
-/* Custom Colors for Cards */
-.bg-purple-light {
-    background-color: #DEDDFF;
-    /* Light Purple Card */
+/* -------------------------------------------------------------------------- */
+/*                                UI ELEMENTS                                 */
+/* -------------------------------------------------------------------------- */
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
 }
 
-.bg-yellow-light {
-    background-color: #FEEFC3;
-    /* Light Yellow Card */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
 }
 
-.bg-purple-dark {
-    background-color: #7B74EA;
-    /* Badge Color */
-}
-
-/* Card Styling */
-.card-custom {
-    border-radius: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-}
-
-.rounded-4 {
-    border-radius: 20px !important;
-}
-
-/* Text Colors */
-.text-purple-custom {
-    color: #DEDDFF;
+.btn-primary:hover {
+    opacity: 0.9;
 }
 
 /* Tables */
@@ -118,100 +112,318 @@ th {
     font-weight: 600;
 }
 
-/* Buttons */
-.btn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+/* Pagination */
+.pagination .page-item .page-link {
+    border-radius: 0 !important;
+    margin: 0 3px;
+    border: 1px solid #dee2e6;
+    color: #333;
     font-weight: 500;
-    transition: 0.3s;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--white);
+.pagination .page-item.active .page-link {
+    background-color: #5D5FEF;
+    border-color: #5D5FEF;
+    color: white;
 }
 
-.btn-primary:hover {
-    opacity: 0.9;
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    background-color: white;
+    border-color: #dee2e6;
 }
 
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    border-radius: 0 !important;
+}
 
-/* Dark Mode Styles */
+/* Card Styling */
+.card-custom {
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.rounded-4 {
+    border-radius: 20px !important;
+}
+
+/* Light Mode Card Colors */
+.bg-purple-light {
+    background-color: #DEDDFF;
+}
+
+/* Light Purple */
+.bg-yellow-light {
+    background-color: #FEEFC3;
+}
+
+/* Light Yellow */
+.bg-blue-light {
+    background-color: #DBEAFE;
+}
+
+/* Light Blue */
+
+.text-purple-custom {
+    color: #DEDDFF;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            DARK MODE TOGGLE SWITCH                         */
+/* -------------------------------------------------------------------------- */
+.mod-switch {
+    cursor: pointer;
+    user-select: none;
+}
+
+.mod-switch-track {
+    width: 70px;
+    height: 34px;
+    background-color: #E5E7EB;
+    border-radius: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    transition: background-color 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.mod-switch-circle {
+    width: 26px;
+    height: 26px;
+    background-color: #3B82F6;
+    border-radius: 50%;
+    position: absolute;
+    left: 4px;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.icon-sun,
+.icon-moon {
+    font-size: 14px;
+    z-index: 1;
+    transition: opacity 0.3s;
+}
+
+.icon-sun {
+    color: #9CA3AF;
+}
+
+.icon-moon {
+    color: #9CA3AF;
+}
+
+#theme-toggle {
+    display: none;
+}
+
+/* Hide old button */
+
+/* -------------------------------------------------------------------------- */
+/*                                DARK MODE                                   */
+/* -------------------------------------------------------------------------- */
 body.dark-mode {
     --bg-color: #111827;
     --text-dark: #F3F4F6;
     --white: #1F2937;
-    /* Card background */
     color: var(--text-dark);
     background-color: var(--bg-color);
 }
 
-body.dark-mode #wrapper #sidebar-wrapper {
+/* Global Overrides for Bootstrap Utilities */
+body.dark-mode .bg-white,
+body.dark-mode .bg-light {
     background-color: #1F2937 !important;
-    border-right: 1px solid #374151;
+    color: #F3F4F6 !important;
 }
 
-body.dark-mode #page-content-wrapper {
-    background-color: #111827 !important;
-    /* Override inline styles */
-}
-
-body.dark-mode .card,
-body.dark-mode .card-custom,
-body.dark-mode .table-container,
-body.dark-mode .bg-white {
-    background-color: #1F2937 !important;
-    color: #F3F4F6;
+body.dark-mode .text-dark {
+    color: #F3F4F6 !important;
 }
 
 body.dark-mode .text-muted {
     color: #9CA3AF !important;
 }
 
+body.dark-mode .border,
+body.dark-mode .border-top,
+body.dark-mode .border-bottom,
+body.dark-mode .border-start,
+body.dark-mode .border-end {
+    border-color: #374151 !important;
+}
+
+/* Sidebar Dark Mode */
+body.dark-mode #wrapper #sidebar-wrapper {
+    background-color: #1F2937 !important;
+    border-right: 1px solid #374151;
+}
+
+body.dark-mode #sidebar-wrapper h5 {
+    color: #F3F4F6 !important;
+}
+
 body.dark-mode .list-group-item {
-    color: #9CA3AF;
+    color: #FFFFFF !important;
     background-color: transparent !important;
     border: none;
 }
 
-body.dark-mode .list-group-item:hover,
-body.dark-mode .active-item {
+body.dark-mode .list-group-item:hover {
     color: #A5B4FC !important;
-    /* Lighter indigo */
+    background-color: rgba(165, 180, 252, 0.1) !important;
 }
 
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-    background-color: #374151;
-    border-color: #4B5563;
+body.dark-mode .active-item {
+    background-color: #5D5FEF !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Layout Content Dark Mode */
+body.dark-mode #page-content-wrapper {
+    background-color: #111827 !important;
+}
+
+/* Components Dark Mode */
+body.dark-mode .card,
+body.dark-mode .card-custom,
+body.dark-mode .table-container,
+body.dark-mode .modal-content {
+    background-color: #1F2937 !important;
+    border-color: #374151 !important;
     color: #F3F4F6;
 }
 
-body.dark-mode input:focus,
-body.dark-mode select:focus,
-body.dark-mode textarea:focus {
-    background-color: #4B5563;
-    color: #F3F4F6;
-    border-color: #6366F1;
+/* Forms & Inputs */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #374151 !important;
+    color: #FFFFFF !important;
+    border-color: #4B5563 !important;
 }
 
-body.dark-mode table th {
-    color: #D1D5DB;
-    border-bottom-color: #374151;
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: #4B5563 !important;
+    border-color: #5D5FEF !important;
+    box-shadow: 0 0 0 0.25rem rgba(93, 95, 239, 0.25);
 }
 
-body.dark-mode table td {
-    border-bottom-color: #374151;
-    color: #E5E7EB;
+/* Dropdowns */
+body.dark-mode .dropdown-menu {
+    background-color: #1F2937 !important;
+    border: 1px solid #374151;
 }
 
-body.dark-mode .navbar i {
+body.dark-mode .dropdown-item {
+    color: #E5E7EB !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #374151 !important;
+    color: #5D5FEF !important;
+}
+
+/* Table Overrides */
+body.dark-mode .table,
+body.dark-mode table {
+    --bs-table-bg: transparent !important;
+    --bs-table-striped-bg: transparent !important;
+    color: #E5E7EB !important;
+}
+
+body.dark-mode tr,
+body.dark-mode th,
+body.dark-mode td {
+    background-color: transparent !important;
+    border-color: #374151 !important;
+    color: #E5E7EB !important;
+}
+
+body.dark-mode .table-hover>tbody>tr:hover>* {
+    --bs-table-accent-bg: rgba(93, 95, 239, 0.1) !important;
+    color: #FFFFFF !important;
+}
+
+/* Feature Specific Overrides */
+body.dark-mode .schedule-badge,
+body.dark-mode .badge.bg-light {
+    background-color: #374151 !important;
+    color: #E5E7EB !important;
+    border: 1px solid #4B5563 !important;
+}
+
+body.dark-mode .class-link {
     color: #F3F4F6 !important;
 }
 
+body.dark-mode .class-card {
+    background-color: #1F2937 !important;
+    border-color: #374151 !important;
+}
+
+body.dark-mode .text-primary {
+    color: #818CF8 !important;
+}
+
+body.dark-mode .text-secondary {
+    color: #9CA3AF !important;
+}
+
+body.dark-mode .navbar i,
 body.dark-mode .navbar .fw-bold {
+    color: #F3F4F6 !important;
+}
+
+/* Card Colors - Dark Mode */
+body.dark-mode .bg-purple-light {
+    background-color: #4C1D95 !important;
+    /* Deep Purple */
+    color: #E0E7FF !important;
+}
+
+body.dark-mode .bg-yellow-light {
+    background-color: #9A3412 !important;
+    /* Dark Orange */
+    color: #FEF3C7 !important;
+}
+
+body.dark-mode .bg-blue-light {
+    background-color: #1E3A8A !important;
+    /* Royal Blue */
+    color: #DBEAFE !important;
+}
+
+body.dark-mode .bg-purple-light .text-dark,
+body.dark-mode .bg-yellow-light .text-dark,
+body.dark-mode .bg-blue-light .text-dark {
+    color: #F3F4F6 !important;
+}
+
+/* Toggle Switch - Dark Mode State */
+body.dark-mode .mod-switch-track {
+    background-color: #374151;
+    border: 1px solid #4B5563;
+}
+
+body.dark-mode .mod-switch-circle {
+    transform: translateX(36px);
+    background-color: #3B82F6;
+}
+
+body.dark-mode .icon-sun {
+    color: #6B7280;
+}
+
+body.dark-mode .icon-moon {
     color: #F3F4F6;
 }

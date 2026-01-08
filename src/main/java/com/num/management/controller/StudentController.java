@@ -1,12 +1,14 @@
 package com.num.management.controller;
 
 import com.num.management.repository.StudentRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@Slf4j
 public class StudentController {
 
     @Autowired
@@ -15,23 +17,107 @@ public class StudentController {
     @Autowired
     private com.num.management.repository.ClassRepository classRepository;
 
+    /**
+     * Displays a list of students, optionally filtered by a search keyword or
+     * class.
+     *
+     * @param model   The UI model to hold attributes.
+     * @param keyword Optional search term for filtering students by name.
+     * @param classId Optional class ID for filtering students by class.
+     * @return The "students" view name.
+     */
     @GetMapping("/students")
     public String listStudents(Model model,
-            @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword) {
-        if (keyword != null && !keyword.isEmpty()) {
-            model.addAttribute("students", studentRepository.findByNameContainingIgnoreCase(keyword));
+            @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(value = "classId", required = false) Long classId,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "10") int size) {
+
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by("name"));
+        org.springframework.data.domain.Page<com.num.management.model.Student> studentPage;
+
+        if (classId != null) {
+            log.debug("Filtering students by class ID: {}", classId);
+            studentPage = studentRepository.findByClassEntityId(classId, pageable);
+        } else if (keyword != null && !keyword.isEmpty()) {
+            log.debug("Searching for students with keyword: {}", keyword);
+            studentPage = studentRepository.findByNameContainingIgnoreCase(keyword, pageable);
         } else {
-            model.addAttribute("students", studentRepository.findAll());
+            log.debug("Fetching all students list");
+            studentPage = studentRepository.findAll(pageable);
         }
-        model.addAttribute("keyword", keyword); // Keep the keyword in the search box
+
+        model.addAttribute("students", studentPage);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("classId", classId);
+        // Add all classes for the filter dropdown
+        model.addAttribute("classes", classRepository.findAll(org.springframework.data.domain.Sort.by("name")));
+
+        // Pagination Logic
+        int totalPages = studentPage.getTotalPages();
+        if (totalPages > 0) {
+            java.util.List<Integer> pageNumbers = new java.util.ArrayList<>();
+            int pageNumber = studentPage.getNumber() + 1; // 1-based current page
+
+            pageNumbers.add(1);
+
+            for (int i = 2; i < totalPages; i++) {
+                if (i == 2 || i == totalPages - 1 || Math.abs(i - pageNumber) <= 1) {
+                    pageNumbers.add(i);
+                } else if (pageNumbers.get(pageNumbers.size() - 1) != -1) {
+                    pageNumbers.add(-1);
+                }
+            }
+
+            if (totalPages > 1) {
+                pageNumbers.add(totalPages);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
         return "students";
     }
 
+    /**
+     * Shows the form for creating a new student.
+     *
+     * @param model The UI model.
+     * @return The "student_form" view name.
+     */
+    /**
+     * Shows the form for creating a new student.
+     *
+     * @param model   The UI model.
+     * @param classId Optional query parameter to pre-select a class.
+     * @return The "student_form" view name.
+     */
+    // Helper to group classes for dropdown
+    private java.util.Map<String, java.util.Map<String, java.util.List<com.num.management.model.ClassEntity>>> getGroupedClasses() {
+        return classRepository.findAll(org.springframework.data.domain.Sort.by("name")).stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        c -> c.getFaculty() == null || c.getFaculty().isEmpty() ? "Other" : c.getFaculty(),
+                        java.util.TreeMap::new,
+                        java.util.stream.Collectors.groupingBy(
+                                c -> c.getDepartment() == null || c.getDepartment().isEmpty() ? "Other"
+                                        : c.getDepartment(),
+                                java.util.TreeMap::new,
+                                java.util.stream.Collectors.toList())));
+    }
+
     @GetMapping("/students/new")
-    public String showNewStudentForm(Model model) {
+    public String showNewStudentForm(Model model,
+            @org.springframework.web.bind.annotation.RequestParam(value = "classId", required = false) Long classId) {
+        log.info("Request to show new student form");
         com.num.management.model.Student student = new com.num.management.model.Student();
+
+        if (classId != null) {
+            classRepository.findById(classId).ifPresent(student::setClassEntity);
+        }
+
         model.addAttribute("student", student);
-        model.addAttribute("classes", classRepository.findAll());
+        // Pass grouped classes instead of flat list for better UX
+        model.addAttribute("groupedClasses", getGroupedClasses());
         return "student_form";
     }
 
@@ -41,10 +127,12 @@ public class StudentController {
             org.springframework.validation.BindingResult result,
             Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("classes", classRepository.findAll());
+            log.warn("Validation errors while saving student: {}", result.getAllErrors());
+            model.addAttribute("groupedClasses", getGroupedClasses());
             return "student_form";
         }
         studentRepository.save(student);
+        log.info("Student saved successfully with ID: {}", student.getId());
         return "redirect:/students";
     }
 
@@ -53,7 +141,7 @@ public class StudentController {
         com.num.management.model.Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid student Id:" + id));
         model.addAttribute("student", student);
-        model.addAttribute("classes", classRepository.findAll()); // Fetch all classes
+        model.addAttribute("groupedClasses", getGroupedClasses());
         return "student_form";
     }
 
@@ -63,8 +151,8 @@ public class StudentController {
             org.springframework.validation.BindingResult result,
             Model model) {
         if (result.hasErrors()) {
-            student.setId(id); // Keep ID
-            model.addAttribute("classes", classRepository.findAll());
+            student.setId(id);
+            model.addAttribute("groupedClasses", getGroupedClasses());
             return "student_form";
         }
         student.setId(id);
@@ -80,8 +168,6 @@ public class StudentController {
         com.num.management.model.Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid student Id:" + id));
 
-        // Manually delete related attendance records first to avoid foreign key
-        // constraint error
         java.util.List<com.num.management.model.Attendance> attendanceRecords = attendanceRepository
                 .findByStudentIdOrderByDateDesc(id);
         attendanceRepository.deleteAll(attendanceRecords);
@@ -98,7 +184,6 @@ public class StudentController {
         java.util.List<com.num.management.model.Attendance> attendanceList = attendanceRepository
                 .findByStudentIdOrderByDateDesc(id);
 
-        // Calculate Stats
         long total = attendanceList.size();
         long present = attendanceList.stream().filter(a -> "Present".equalsIgnoreCase(a.getStatus())).count();
         double rate = total > 0 ? (double) present / total * 100 : 0.0;

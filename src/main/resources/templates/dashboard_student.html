@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragments/layout}">
+
+<head>
+    <title>Student Dashboard - NUM</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 mb-4 fw-bold">Welcome, <span th:text="${studentName}">Name</span></h2>
+
+            <div class="row">
+                <!-- My Stats -->
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 text-white bg-primary h-100">
+                        <div class="card-body p-4 text-center">
+                            <h5 class="fw-bold mb-3">My Attendance</h5>
+                            <h1 class="display-1 fw-bold mb-0" th:text="${attendanceStats}">95%</h1>
+                            <p class="mt-2 text-white-50">Overall Presence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Class Info -->
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="fw-bold text-dark"><i class="fas fa-graduation-cap me-2"></i>My Class</h5>
+                        </div>
+                        <div class="card-body px-4">
+                            <div th:if="${myClass != null}">
+                                <h4 class="fw-bold text-primary" th:text="${myClass.name}">Year 3 - IT</h4>
+                                <p class="text-muted" th:text="${myClass.faculty}">Faculty of IT</p>
+                                <hr>
+                                <p class="mb-1"><small class="text-muted">Department:</small> <span class="fw-bold"
+                                        th:text="${myClass.department}">IT</span></p>
+                                <p class="mb-0"><small class="text-muted">Subjects:</small> <span
+                                        class="badge bg-secondary me-1" th:each="sub : ${myClass.subjects}"
+                                        th:text="${sub.name}">Web</span></p>
+                            </div>
+                            <div th:if="${myClass == null}">
+                                <p class="text-muted">You are not assigned to a class.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Results -->
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                            <h5 class="fw-bold text-dark"><i class="fas fa-star me-2"></i>Latest Results</h5>
+                        </div>
+                        <div class="card-body px-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>Advanced Web</span>
+                                    <span class="badge bg-success rounded-pill">A</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>Database Systems</span>
+                                    <span class="badge bg-primary rounded-pill">B+</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>Network Security</span>
+                                    <span class="badge bg-success rounded-pill">A</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Preview -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="fw-bold">Today's Schedule</h5>
+                </div>
+                <div class="card-body px-4">
+                    <div class="alert alert-info border-0 d-flex align-items-center">
+                        <i class="fas fa-clock fa-2x me-3"></i>
+                        <div>
+                            <h5 class="alert-heading fw-bold mb-0">14:00 - 17:00 : Advanced Web Development</h5>
+                            <p class="mb-0">Room 304 • Teacher Sokha</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
